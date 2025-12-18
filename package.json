@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "node server.js",
-    "export:notes": "osascript -l JavaScript scripts/export-apple-notes.jxa.js > notes-$(date +%Y%m%d-%H%M%S).log"
+    "export:notes": "osascript -l JavaScript scripts/export-apple-notes.jxa.js > notes-$(date +%Y%m%d-%H%M%S).log",
+    "export:calendar": "osascript -l JavaScript scripts/export-calendar.jxa.js > calendar-$(date +%Y%m%d-%H%M%S).log",
+    "export:reminders": "osascript -l JavaScript scripts/export-reminders.jxa.js > reminders-$(date +%Y%m%d-%H%M%S).log"
   },
   "devDependencies": {
     "vite": "^7.2.4"
