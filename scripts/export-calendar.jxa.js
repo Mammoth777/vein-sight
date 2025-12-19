@@ -37,10 +37,19 @@ function run(argv) {
   let eventCounter = 0;
 
   const calendars = CalendarApp.calendars();
+  printErr('找到日历数量: ' + calendars.length);
   calendars.forEach(function (cal) {
     const calName = String(cal.name());
+    printErr('处理日历: ' + calName);
 
-    const events = cal.events();
+    // 使用 whose 在 Calendar 侧按时间范围先筛一遍，减少全量拉取
+    const events = cal.events.whose({
+      startDate: {
+        '>=': threeDaysAgo,
+        '<=': now
+      }
+    })();
+    printErr('  符合时间范围的事件数量: ' + events.length);
     events.forEach(function (ev) {
       // 有些事件可能沒有开始時間，防御性处理
       let startDate, endDate;
@@ -53,10 +62,16 @@ function run(argv) {
 
       if (!startDate) return;
 
-      const jsStart = new Date(startDate);
+      // 尝试安全地获取标题用于调试输出，避免属性不存在时报错
+      let debugTitle = '';
+      try {
+        debugTitle = String(ev.summary ? ev.summary() : '');
+      } catch (e) {
+        debugTitle = '';
+      }
+      printErr('    处理事件…' + debugTitle);
 
-      // 只导出最近 3 天內開始的事件（含邊界）
-      if (jsStart < threeDaysAgo || jsStart > now) return;
+      const jsStart = new Date(startDate);
 
       eventCounter++;
 
